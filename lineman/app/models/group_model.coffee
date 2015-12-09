@@ -150,6 +150,9 @@ angular.module('loomioApp').factory 'GroupModel', (DraftableModel, AppConfig) ->
 
     markAsRead: =>
       @remote.postMember(@key, 'mark_as_read')
+      _.map @discussions(), (discussion) ->
+        return unless discussion.isUnread()
+        discussion.update(lastReadAt: moment(), readSalientItemsCount: discussion.salientItemsCount)
 
     uploadPhoto: (file, kind) =>
       @remote.upload("#{@key}/upload_photo/#{kind}", file)
