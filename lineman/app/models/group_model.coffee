@@ -148,6 +148,9 @@ angular.module('loomioApp').factory 'GroupModel', (DraftableModel, AppConfig) ->
         @remove()
         _.each @memberships(), (m) -> m.remove()
 
+    markAsRead: =>
+      @remote.postMember(@key, 'mark_as_read')
+
     uploadPhoto: (file, kind) =>
       @remote.upload("#{@key}/upload_photo/#{kind}", file)
 
