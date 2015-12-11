@@ -1,4 +1,4 @@
-angular.module('loomioApp').controller 'GroupPageController', ($rootScope, $location, $routeParams, Records, CurrentUser, MessageChannelService, AbilityService, AppConfig, ModalService, SubscriptionSuccessModal, GroupWelcomeModal) ->
+angular.module('loomioApp').controller 'GroupPageController', ($rootScope, $location, $routeParams, Records, CurrentUser, MessageChannelService, AbilityService, AppConfig, ModalService, SubscriptionSuccessModal, GroupWelcomeModal, LegacyTrialExpiredModal) ->
   $rootScope.$broadcast 'currentComponent', {page: 'groupPage'}
 
   Records.groups.findOrFetchById($routeParams.key).then (group) =>
@@ -9,8 +9,11 @@ angular.module('loomioApp').controller 'GroupPageController', ($rootScope, $loca
     $rootScope.$broadcast 'analyticsSetGroup', @group
     $rootScope.$broadcast 'trialIsOverdue', @group if @group.trialIsOverdue()
     MessageChannelService.subscribeToGroup(@group)
+
     @handleSubscriptionSuccess()
     @handleWelcomeModal()
+    LegacyTrialExpiredModal.showIfAppropriate(@group, CurrentUser)
+
   , (error) ->
     $rootScope.$broadcast('pageError', error)
 
